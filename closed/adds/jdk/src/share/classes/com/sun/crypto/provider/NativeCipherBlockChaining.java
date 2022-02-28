@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1997, 2017, Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997, 2018, Oracle and/or its affiliates. All rights reserved.
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
  *
  * This code is free software; you can redistribute it and/or modify it
@@ -22,10 +22,9 @@
  * or visit www.oracle.com if you need additional information or have any
  * questions.
  */
-
 /*
  * ===========================================================================
- * (c) Copyright IBM Corp. 2018, 2021 All Rights Reserved
+ * (c) Copyright IBM Corp. 2018, 2022 All Rights Reserved
  * ===========================================================================
  */
 
@@ -33,11 +32,12 @@ package com.sun.crypto.provider;
 
 import java.security.InvalidKeyException;
 import java.security.ProviderException;
+import java.util.ArrayDeque;
 import com.sun.crypto.provider.AESCrypt;
 
-import java.util.ArrayDeque;
 import jdk.crypto.jniprovider.NativeCrypto;
-import sun.misc.Cleaner;
+import jdk.internal.ref.CleanerFactory;
+import java.lang.ref.Cleaner;
 
 /**
  * This class represents the native implementation of ciphers in
@@ -55,20 +55,23 @@ class NativeCipherBlockChaining extends FeedbackCipher  {
     protected static ArrayDeque<Integer> avStack = new ArrayDeque<Integer>(numContexts);
 
     private static final NativeCrypto nativeCrypto;
+    private static final Cleaner contextCleaner;
 
     /*
      * Initialize the CBC context.
      */
     static {
         nativeCrypto = NativeCrypto.getNativeCrypto();
+        contextCleaner = CleanerFactory.cleaner();
         contexts = new long[numContexts];
 
         for (int i = 0; i < numContexts; i++) {
-            long context = nativeCrypto.CBCCreateContext();
+            long context = nativeCrypto.CreateContext();
             if (context == -1) {
                 throw new ProviderException("Error in Native CipherBlockChaining");
             }
             contexts[i] = context;
+
             avStack.push(i);
         }
     }
@@ -89,7 +92,7 @@ class NativeCipherBlockChaining extends FeedbackCipher  {
              */
             synchronized (NativeCipherBlockChaining.class) {
                 if (ctxIndx == -1) {
-                    long ret = nativeCrypto.CBCDestroyContext(nativeContext);
+                    long ret = nativeCrypto.DestroyContext(nativeContext);
                     if (ret == -1) {
                         throw new ProviderException("Error in Native CipherBlockChaining");
                     }
@@ -104,10 +107,9 @@ class NativeCipherBlockChaining extends FeedbackCipher  {
      * Get CBC context.
      */
     synchronized static long getContext(NativeCipherBlockChaining cipher) {
-
         if (avStack.isEmpty()) {
             cipher.ctxIndx = -1;
-            long context = nativeCrypto.CBCCreateContext();
+            long context = nativeCrypto.CreateContext();
             if (context == -1) {
                 throw new ProviderException("Error in Native CipherBlockChaining");
             }
@@ -123,7 +125,7 @@ class NativeCipherBlockChaining extends FeedbackCipher  {
     private int mode; // 0: decryption 1: encryption
 
     /*
-     * random bytes that are initialized with iv
+     * Random bytes that are initialized with iv
      */
     protected byte[] r;
     protected byte[] rSave = null;
@@ -138,7 +140,7 @@ class NativeCipherBlockChaining extends FeedbackCipher  {
         super(embeddedCipher);
         r = new byte[blockSize];
         nativeContext = getContext(this);
-        Cleaner.create(this, new CBCCleanerRunnable(this.ctxIndx, this.nativeContext));
+        contextCleaner.register(this, new CBCCleanerRunnable(this.ctxIndx, this.nativeContext));
     }
 
     /**
@@ -147,7 +149,6 @@ class NativeCipherBlockChaining extends FeedbackCipher  {
      * @return the string <code>CBC</code>
      */
     String getFeedback() {
-
         return "CBC";
     }
 
@@ -251,7 +252,6 @@ class NativeCipherBlockChaining extends FeedbackCipher  {
      */
     int encrypt(byte[] plain, int plainOffset, int plainLen,
                 byte[] cipher, int cipherOffset) {
-
         if (plainLen <= 0) {
             return plainLen;
         }
@@ -260,10 +260,20 @@ class NativeCipherBlockChaining extends FeedbackCipher  {
             throw new ProviderException("Internal error in input buffering");
         }
 
+        /**
+         * OpenSSL doesn't support overlapping buffers, make a copy of plain.
+         */
+        if (plain == cipher) {
+            byte[] copyOfInput = new byte[plainLen];
+            System.arraycopy(plain, plainOffset, copyOfInput, 0, plainLen);
+            plain = copyOfInput;
+            plainOffset = 0;
+        }
+
         int ret;
         synchronized (this) {
             ret = nativeCrypto.CBCUpdate(nativeContext, plain, plainOffset,
-                    plainLen, cipher, cipherOffset);
+                                            plainLen, cipher, cipherOffset);
         }
         if (ret == -1) {
             throw new ProviderException("Error in Native CipherBlockChaining");
@@ -298,11 +308,9 @@ class NativeCipherBlockChaining extends FeedbackCipher  {
      */
     int decrypt(byte[] cipher, int cipherOffset, int cipherLen,
                 byte[] plain, int plainOffset) {
-
         return encrypt(cipher, cipherOffset, cipherLen,
                        plain, plainOffset);
     }
-
 
     /**
      * Performs last encryption operation.
@@ -328,17 +336,16 @@ class NativeCipherBlockChaining extends FeedbackCipher  {
         synchronized (this) {
             if (plain == cipher) {
                 ret = nativeCrypto.CBCFinalEncrypt(nativeContext, plain.clone(),
-                        plainOffset, plainLen, cipher, cipherOffset);
+                                                plainOffset, plainLen, cipher, cipherOffset);
             } else {
                 ret = nativeCrypto.CBCFinalEncrypt(nativeContext, plain, plainOffset,
-                        plainLen, cipher, cipherOffset);
+                                                    plainLen, cipher, cipherOffset);
             }
         }
 
         if (ret == -1) {
             throw new ProviderException("Error in Native CipherBlockChaining");
         }
-
         return ret;
     }
 }
