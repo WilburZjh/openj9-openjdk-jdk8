@@ -34,7 +34,7 @@ COPY_FILES += $(JDK_OUTPUTDIR)/include/ibmjvmti.h
 # Copy the nss.fips.cfg only on x86 linux
 
 ifeq ($(OPENJDK_TARGET_OS)-$(OPENJDK_TARGET_CPU_ARCH), linux-x86)
-  NSS_FIPS_CFG_SRC := $(TOPDIR)/closed/adds/jdk/src/share/conf/security/nss.fips.cfg
+  NSS_FIPS_CFG_SRC := $(TOPDIR)/closed/adds/jdk/src/share/lib/security/nss.fips.cfg
   NSS_FIPS_CFG_DST := $(JDK_OUTPUTDIR)/lib/security/nss.fips.cfg
 
   $(NSS_FIPS_CFG_DST) : $(NSS_FIPS_CFG_SRC)

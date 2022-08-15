@@ -107,10 +107,10 @@ public final class FIPSConfigurator {
                 }
 
                 // Add FIPS security providers.
-                props.put("security.provider.1", "SunPKCS11 ${java.home}/conf/security/nss.fips.cfg");
-                props.put("security.provider.2", "SUN");
-                props.put("security.provider.3", "SunEC");
-                props.put("security.provider.4", "SunJSSE");
+                props.put("security.provider.1", "sun.security.pkcs11.SunPKCS11 ${java.home}/lib/security/nss.fips.cfg");
+                props.put("security.provider.2", "sun.security.provider.Sun");
+                props.put("security.provider.3", "sun.security.ec.SunEC");
+                props.put("security.provider.4", "com.sun.net.ssl.internal.ssl.Provider");
 
                 // Add FIPS security properties.
                 props.put("keystore.type", "PKCS11");
