@@ -373,26 +373,38 @@ abstract class P11Key implements Key, Length {
             new CK_ATTRIBUTE(CKA_EXTRACTABLE),
         });
         if ((SunPKCS11.mysunpkcs11 != null) && "RSA".equals(algorithm)) {
+            System.out.println("P11Key1");
             if (attributes[0].getBoolean() || attributes[1].getBoolean() || (attributes[2].getBoolean() == false)) {
+                System.out.println("P11Key2");
                 try {
                     byte[] key = SunPKCS11.mysunpkcs11.exportKey(session.id(), attributes, keyID);
+                    System.out.println("P11Key3");
                     RSAPrivateKey rsaPrivKey = RSAPrivateCrtKeyImpl.newKey(key);
+                    System.out.println("P11Key4");
                     if (rsaPrivKey instanceof RSAPrivateCrtKeyImpl) {
+                        System.out.println("P11Key5");
                         return new P11RSAPrivateKeyFIPS(session, keyID, algorithm, keyLength, attributes, (RSAPrivateCrtKeyImpl)rsaPrivKey);
                     } else {
+                        System.out.println("P11Key6");
                         return new P11RSAPrivateNonCRTKeyFIPS(session, keyID, algorithm, keyLength, attributes, rsaPrivKey);
                     }
                 } catch (PKCS11Exception | InvalidKeyException e) {
+                    System.out.println("P11Key7");
                     // Attempt failed, create a P11PrivateKey object.
                 }
             }
+            System.out.println("P11Key8");
         }
+        System.out.println("P11Key9");
         if (attributes[1].getBoolean() || (attributes[2].getBoolean() == false)) {
+            System.out.println("P11Key10");
             return new P11PrivateKey
                 (session, keyID, algorithm, keyLength, attributes);
         } else {
+            System.out.println("P11Key11");
             switch (algorithm) {
                 case "RSA":
+                    System.out.println("P11Key12");
                     // XXX better test for RSA CRT keys (single getAttributes() call)
                     // we need to determine whether this is a CRT key
                     // see if we can obtain the public exponent
