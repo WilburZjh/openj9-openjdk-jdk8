@@ -169,7 +169,9 @@ final class P11Mac extends MacSpi {
                     "Operation cannot be performed without calling engineInit first");
         }
         token.ensureValid();
+        System.out.println("p11Key is: " + p11Key);
         long p11KeyID = p11Key.getKeyID();
+        System.out.println("p11KeyID is: " + p11KeyID);
         try {
             if (session == null) {
                 session = token.getOpSession();
@@ -201,7 +203,11 @@ final class P11Mac extends MacSpi {
                 ("Parameters not supported");
         }
         reset(true);
+        System.out.println("key format is: " + key.getFormat());
+        System.out.println("key algorithm is: " + key.getAlgorithm());
+        System.out.println("algorithm is: " + algorithm);
         p11Key = P11SecretKeyFactory.convertKey(token, key, algorithm);
+        System.out.println("p11Key is: " + p11Key);
         try {
             initialize();
         } catch (PKCS11Exception e) {
