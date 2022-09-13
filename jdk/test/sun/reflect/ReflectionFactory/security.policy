@@ -7,5 +7,6 @@ grant {
         permission java.lang.reflect.ReflectPermission "suppressAccessChecks";
         permission java.lang.RuntimePermission "accessDeclaredMembers";
         permission java.lang.RuntimePermission "accessClassInPackage.sun.reflect";
+        permission java.lang.RuntimePermission "accessClassInPackage.openj9.internal.security";
         permission java.lang.RuntimePermission "reflectionFactoryAccess";
 };
