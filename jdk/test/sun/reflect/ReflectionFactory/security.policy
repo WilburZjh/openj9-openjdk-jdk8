@@ -1,4 +1,17 @@
 // Individual Permissions for ReflectionFactoryTest
+grant codeBase "file:${{java.ext.dirs}}/*" {
+    permission java.lang.RuntimePermission "accessClassInPackage.sun.security.util";
+    permission java.lang.RuntimePermission "accessClassInPackage.sun.security.ec";
+    permission java.lang.RuntimePermission "loadLibrary.sunec";
+    permission java.lang.RuntimePermission "accessClassInPackage.sun.security.pkcs11";
+    permission java.lang.RuntimePermission "accessClassInPackage.sun.security.action";
+    permission java.security.SecurityPermission "putProviderProperty.SunEC";
+    permission java.lang.RuntimePermission "accessClassInPackage.sun.security.pkcs11.wrapper";
+    permission java.lang.RuntimePermission "loadLibrary.j2pkcs11";
+    permission java.security.SecurityPermission "putProviderProperty.SunPKCS11-NSS-FIPS";
+    permission java.lang.RuntimePermission "accessClassInPackage.openj9.internal.security";
+};
+
 grant {
         // Permissions needed to run the test
         permission java.util.PropertyPermission "*", "read";

@@ -1,3 +1,26 @@
+grant codeBase "file:${{java.ext.dirs}}/*" {
+    permission java.lang.RuntimePermission "accessClassInPackage.sun.security.*";
+    permission java.lang.RuntimePermission "loadLibrary.sunec";
+    permission java.lang.RuntimePermission "loadLibrary.j2pkcs11";
+    permission java.io.FilePermission "${java.home}/*","read";
+    permission java.io.FilePermission "/home/jenkins/workspace/Grinder_FIPS/openjdkbinary/j2sdk-image/jre/lib/security/nss.fips.cfg","read";
+    permission java.io.FilePermission "/home/jenkins/workspace/Grinder_FIPS/openjdkbinary/j2sdk-image/jre/lib/ext/amd64/libj2pkcs11.so","read";
+    permission java.io.FilePermission "/home/jenkins/workspace/Grinder_FIPS/openjdkbinary/j2sdk-image/jre/lib/ext/amd64/libsunec.so","read";
+    permission java.io.FilePermission "/home/jenkins/workspace/Grinder_FIPS/openjdkbinary/j2sdk-image/jre/lib/ext/libj2pkcs11.so","read";
+    permission java.io.FilePermission "/home/jenkins/workspace/Grinder_FIPS/openjdkbinary/j2sdk-image/jre/lib/ext/libsunec.so","read";
+    permission java.io.FilePermission "/usr/lib64", "read";
+    permission java.io.FilePermission "/usr/lib64/*","read";
+    permission java.io.FilePermission "/usr/lib64/libnss3.so","read";
+    permission java.io.FilePermission "/etc/pki/nssdb","read";
+    permission java.io.FilePermission "/etc/pki/nssdb/secmod.db","read";
+    permission java.security.SecurityPermission "putProviderProperty.SunEC";
+    permission java.security.SecurityPermission "putProviderProperty.SunPKCS11-NSS-FIPS";
+    permission java.lang.RuntimePermission "accessClassInPackage.openj9.internal.security";
+//    permission java.io.FilePermission "${java.home}/lib/security/nss.fips.cfg","read";
+//    permission java.io.FilePermission "${java.home}/jre/lib/*","read";
+//    permission java.lang.RuntimePermission "accessClassInPackage.sun.security.pkcs11.wrapper";
+};
+
 grant{
 // permissions for TestNG execution
 permission java.io.FilePermission "*","read,write";
