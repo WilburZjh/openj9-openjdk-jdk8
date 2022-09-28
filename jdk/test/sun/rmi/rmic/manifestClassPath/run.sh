@@ -127,13 +127,13 @@ Sys rm -f Main_Stub.class				# javac -extdirs workaround
 
 #Success "$javac" -extdirs "jars" -classpath None Main.java MainI.java
 Success "$rmic"  -extdirs "jars" -classpath .    Main
-Success "$java" ${TESTVMOPTS}  -Djava.ext.dirs="jars" -cp .    Main
+Success "$java" ${TESTVMOPTS}  -Djava.ext.dirs="jars:/home/jenkins/workspace/Grinder_FIPS/openjdkbinary/j2sdk-image/jre/lib/ext" -cp .    Main
 
 Sys rm -f Main_Stub.class
 
 #Success "$javac" -extdirs "jars/sub" -classpath None Main.java MainI.java
 Success "$rmic"  -extdirs "jars/sub" -classpath . Main
-Success "$java" ${TESTVMOPTS}  -Djava.ext.dirs="jars/sub" -cp . Main
+Success "$java" ${TESTVMOPTS}  -Djava.ext.dirs="jars/sub:/home/jenkins/workspace/Grinder_FIPS/openjdkbinary/j2sdk-image/jre/lib/ext" -cp . Main
 
 Cleanup
 
