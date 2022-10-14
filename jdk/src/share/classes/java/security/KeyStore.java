@@ -1198,6 +1198,7 @@ public class KeyStore {
         if (!initialized) {
             throw new KeyStoreException("Uninitialized keystore");
         }
+        System.out.println("KeyStore.java file - setCertificateEntry {alias is: " + alias + ", cert is: " + cert.toString() + "}");
         keyStoreSpi.engineSetCertificateEntry(alias, cert);
     }
 

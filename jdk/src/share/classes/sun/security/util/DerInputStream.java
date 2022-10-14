@@ -315,6 +315,8 @@ public class DerInputStream {
      */
     public DerValue[] getSequence(int startLen) throws IOException {
         tag = (byte)buffer.read();
+        System.out.println("DerInputStream.java file - getSequence: {tag is: " + tag + "}");
+        System.out.println("DerValue.tag_Sequence is: " + DerValue.tag_Sequence);
         if (tag != DerValue.tag_Sequence)
             throw new IOException("Sequence tag error");
         return readVector(startLen);

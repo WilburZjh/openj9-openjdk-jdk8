@@ -1872,6 +1872,9 @@ public class X509CertImpl extends X509Certificate implements DerEncoder {
     private static X500Principal getX500Principal(X509Certificate cert,
             boolean getIssuer) throws Exception {
         byte[] encoded = cert.getEncoded();
+        for(int i=0; i<encoded.length; i++) {
+            System.out.println("encoded " + i + " is " + encoded[i]);
+        }
         DerInputStream derIn = new DerInputStream(encoded);
         DerValue tbsCert = derIn.getSequence(3)[0];
         DerInputStream tbsIn = tbsCert.data;
@@ -1898,6 +1901,7 @@ public class X509CertImpl extends X509Certificate implements DerEncoder {
      */
     public static X500Principal getSubjectX500Principal(X509Certificate cert) {
         try {
+            System.out.println("X509CertImpl.java file - getSubjectX500Principal: {cert: " + cert.toString() + "}");
             return getX500Principal(cert, false);
         } catch (Exception e) {
             throw new RuntimeException("Could not parse subject", e);

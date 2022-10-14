@@ -511,6 +511,7 @@ final class P11KeyStore extends KeyStoreSpi {
 
         KeyStore.Entry entry = null;
         entry = new KeyStore.TrustedCertificateEntry(cert);
+        System.out.println("P11KeyStore.java file - engineSetCertificateEntry: {entry is: " + entry.toString() + "}");
         engineSetEntry(alias, entry, null);
     }
 
@@ -1041,6 +1042,7 @@ final class P11KeyStore extends KeyStoreSpi {
                 deleteEntry(alias);
             }
             try {
+                System.out.println("P11KeyStore.java file - engineSetEntry: {alias is: " + alias + ", xcert is: " + xcert.toString() + "}");
                 storeCert(alias, xcert);
                 module.setTrust(token, xcert);
                 mapLabels();
