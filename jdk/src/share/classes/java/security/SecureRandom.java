@@ -661,14 +661,17 @@ public class SecureRandom extends java.util.Random {
                 String alg = m.group(1);
                 String prov = m.group(3);
 
+                System.out.println("getInstanceStrong -> start try");
                 try {
                     if (prov == null) {
+                        System.out.println("getInstanceStrong -> start try -> prov == null -> alg is: " + alg);
                         return SecureRandom.getInstance(alg);
                     } else {
+                        System.out.println("getInstanceStrong -> start try -> prov != null -> alg is: " + alg + ", prov is: " + prov);
                         return SecureRandom.getInstance(alg, prov);
                     }
-                } catch (NoSuchAlgorithmException |
-                        NoSuchProviderException e) {
+                } catch (Exception e) {
+                    e.printStackTrace();
                 }
                 remainder = m.group(5);
             } else {

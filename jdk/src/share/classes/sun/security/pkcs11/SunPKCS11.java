@@ -1142,6 +1142,11 @@ public final class SunPKCS11 extends AuthProvider {
                     Service s = d.service(token, mechanism);
                     putService(s);
                 }
+                System.out.println("SunPKCS11 -> CKF_RNG: " + CKF_RNG);
+                System.out.println("SunPKCS11 -> PCKM_SECURERANDOM: " + PCKM_SECURERANDOM);
+                System.out.println("SunPKCS11 -> token.tokenInfo.flags & CKF_RNG): " + (token.tokenInfo.flags & CKF_RNG));
+                System.out.println("SunPKCS11 -> config.isEnabled(PCKM_SECURERANDOM): " + Boolean.toString(config.isEnabled(PCKM_SECURERANDOM)));
+                System.out.println("SunPKCS11 -> !token.sessionManager.lowMaxSessions(): " + Boolean.toString(!token.sessionManager.lowMaxSessions()));
                 if (((token.tokenInfo.flags & CKF_RNG) != 0)
                         && config.isEnabled(PCKM_SECURERANDOM)
                         && !token.sessionManager.lowMaxSessions()) {
@@ -1149,6 +1154,7 @@ public final class SunPKCS11 extends AuthProvider {
                     // not support many sessions. if we did, we might
                     // run out of sessions in the middle of a
                     // nextBytes() call where we cannot fail over.
+                    System.out.println("SunPKCS11 -> putService for securerandom.");
                     putService(new P11Service(token, SR, "PKCS11",
                         "sun.security.pkcs11.P11SecureRandom", null,
                         PCKM_SECURERANDOM));
