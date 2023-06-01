@@ -127,6 +127,7 @@ RestrictedSecurity1.jce.provider.2 = sun.security.provider.Sun \
     {CertStore, Collection, ImplementedIn=Software}, \
     {CertStore, com.sun.security.IndexedCollection, ImplementedIn=Software}, \
     {Configuration, JavaLoginConfig, *}, \
+    {KeyStore, PKCS12, *}, \
     {Policy, JavaPolicy, *}]
 RestrictedSecurity1.jce.provider.3 = sun.security.ec.SunEC \
     [{AlgorithmParameters, EC, *}, \
