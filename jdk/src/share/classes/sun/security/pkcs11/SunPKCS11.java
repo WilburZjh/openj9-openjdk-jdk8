@@ -59,8 +59,9 @@ import javax.security.auth.callback.TextOutputCallback;
 import openj9.internal.security.RestrictedSecurity;
 
 import sun.security.rsa.RSAUtil.KeyType;
-import sun.security.pkcs11.ECUtil;
+import sun.security.pkcs11.P11ECUtil;
 import sun.security.util.Debug;
+import sun.security.util.ECUtil;
 import sun.security.util.ResourcesMgr;
 
 import sun.security.pkcs11.Secmod.*;
@@ -531,7 +532,7 @@ public final class SunPKCS11 extends AuthProvider {
                     throw new PKCS11Exception(CKR_GENERAL_ERROR);
                 }
                 try {
-                    keyBytes = ECUtil.generateECPrivateKey(
+                    keyBytes = P11ECUtil.generateECPrivateKey(
                         ckAttrsMap.getOrDefault(CKA_VALUE, new CK_ATTRIBUTE(CKA_VALUE, BigInteger.ZERO)).getBigInteger(),
                         ECUtil.getECParameterSpec(
                             Security.getProvider("SunEC"),

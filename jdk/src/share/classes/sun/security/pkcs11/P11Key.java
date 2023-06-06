@@ -54,9 +54,10 @@ import sun.security.pkcs11.wrapper.*;
 import static sun.security.pkcs11.TemplateManager.O_GENERATE;
 import static sun.security.pkcs11.wrapper.PKCS11Constants.*;
 
-import sun.security.pkcs11.ECUtil;
+import sun.security.pkcs11.P11ECUtil;
 import sun.security.util.Debug;
 import sun.security.util.DerValue;
+import sun.security.util.ECUtil;
 import sun.security.util.Length;
 
 import sun.security.jca.JCAUtil;
@@ -400,7 +401,7 @@ abstract class P11Key implements Key, Length {
         if (keySensitive && (SunPKCS11.mysunpkcs11 != null) && "EC".equals(algorithm)) {
             try {
                 byte[] key = SunPKCS11.mysunpkcs11.exportKey(session.id(), attributes, keyID);
-                ECPrivateKey ecPrivKey = ECUtil.decodePKCS8ECPrivateKey(key);
+                ECPrivateKey ecPrivKey = P11ECUtil.decodePKCS8ECPrivateKey(key);
                 return new P11ECPrivateKeyFIPS(session, keyID, algorithm, keyLength, attributes, ecPrivKey);
             } catch (PKCS11Exception | InvalidKeySpecException e) {
                 // Attempt failed, create a P11PrivateKey object.
